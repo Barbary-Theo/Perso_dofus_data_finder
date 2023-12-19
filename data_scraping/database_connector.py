@@ -17,7 +17,7 @@ class DatabaseConnector():
     def insert_list_of_data_into_item(self, data):
         mydb, cursor = self.open_connection()
 
-        insert_query = "INSERT INTO item (item_id, name, type, level, main_type) VALUES (%s, %s, %s, %s, %s)"
+        insert_query = "INSERT INTO item (item_id, name, category, level, main_type) VALUES (%s, %s, %s, %s, %s)"
 
         for item in data:
             item_values = (item['id'], item['name'], item['type'], item['level'], item['main_type'])
@@ -30,3 +30,5 @@ class DatabaseConnector():
 
         cursor.close()
         mydb.close()
+
+        print(f"\t - {len(data)} items inserted")

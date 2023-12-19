@@ -11,7 +11,9 @@ from text_parser import TextParser
 
 
 class Requester:
-    DOFUS_URL_ARCHIVE = {"resource": "https://www.dofus.com/fr/mmorpg/encyclopedie/ressources?sort=1A&", "consommable": "https://www.dofus.com/fr/mmorpg/encyclopedie/consommables?sort=1A&"}
+    DOFUS_URL_ARCHIVE = {"resource": "https://www.dofus.com/fr/mmorpg/encyclopedie/ressources?sort=1A&",
+                         "consommable": "https://www.dofus.com/fr/mmorpg/encyclopedie/consommables?sort=1A&",
+                         "apparat": "https://www.dofus.com/fr/mmorpg/encyclopedie/objets-d-apparat?sort=1A&"}
     DOFUS_URL_ARCHIVE_NB_ELE_PER_PAGE = 24
     DOFUS_TOTAL_CONTENT_TAG_TARGET = "div"
     DOFUS_TOTAL_CONTENT_CLASSES_TARGET = ["ak-list-info"]
@@ -74,22 +76,22 @@ class Requester:
         total_page = math.ceil(total_objects / self.DOFUS_URL_ARCHIVE_NB_ELE_PER_PAGE)
 
         all_objects = []
-        for page in range(1, total_page):
-            print(f" -> reading page {page} of {total_page}")
+        for page in range(1, total_page + 1):
+            print(f" -> reading page {page}/{total_page}")
             objects, status = self.get_data_on_page(page, type)
-            #print(f"Resources collected -> {objects}")
             if not objects or not status.__contains__("Successfully"):
                 return [], f"Failed to get {type}"
             self.DATABASE_CONNECTOR.insert_list_of_data_into_item(objects)
             all_objects.extend(objects)
-            random_sleep_time = random.uniform(1 * 60, 2 * 60)
-            print(f"Sleeping for {int(random_sleep_time / 60)} minutes before next step\n")
+            random_sleep_time = random.uniform(5, 10)
+            print(f"Sleeping for {int(random_sleep_time)} seconds before next call to cancel status 1015\n")
             time.sleep(random_sleep_time)
 
-        return [], "Successfully updated"
+        return all_objects, "Successfully updated"
 
     def update_dofus(self):
         resources, resources_status = self.update_dofus_by_type(Type.RESOURCE)
         consommables, consommables_status = self.update_dofus_by_type(Type.CONSOMMABLE)
+        apparats, apparats_status = self.update_dofus_by_type(Type.APPARAT)
 
-        return consommables, resources, "Successfully updated"
+        return consommables, resources, apparats, "Successfully updated"
