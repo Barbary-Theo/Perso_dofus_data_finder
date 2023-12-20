@@ -93,6 +93,7 @@ class Requester:
         return all_objects, "Successfully updated"
 
     def update_dofus(self):
+        self.DATABASE_CONNECTOR.insert_new_data_synchronization_date()
         resources, resources_status = self.update_dofus_by_type(Type.RESOURCE)
         consommables, consommables_status = self.update_dofus_by_type(Type.CONSOMMABLE)
         apparats, apparats_status = self.update_dofus_by_type(Type.APPARAT)

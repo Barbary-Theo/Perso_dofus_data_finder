@@ -1,4 +1,5 @@
 import pymysql
+from datetime import datetime
 
 
 class DatabaseConnector():
@@ -32,3 +33,15 @@ class DatabaseConnector():
         mydb.close()
 
         print(f"\t - {len(data)} items inserted")
+
+    def insert_new_data_synchronization_date(self):
+        mydb, cursor = self.open_connection()
+
+        insert_query = "INSERT INTO item_synchronization (starting_date) VALUES (%s)"
+
+        cursor.execute(insert_query, datetime.now())
+
+        mydb.commit()
+
+        cursor.close()
+        mydb.close()
