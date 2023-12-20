@@ -47,7 +47,10 @@ class Requester:
         return -1
 
     def request_dofus_by_page_and_type(self, page, type):
-        response = requests.get(self.DOFUS_URL_ARCHIVE[type.value] + f"page={page}")
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+        }
+        response = requests.get(self.DOFUS_URL_ARCHIVE[type.value] + f"page={page}", headers=headers)
         return response.text if response.status_code == 200 else f"Failed to fetch URL with page{page}"
 
     def get_data_on_page(self, page, type):
@@ -94,4 +97,4 @@ class Requester:
         consommables, consommables_status = self.update_dofus_by_type(Type.CONSOMMABLE)
         apparats, apparats_status = self.update_dofus_by_type(Type.APPARAT)
 
-        return consommables, resources, apparats, "Successfully updated"
+        return resources, consommables, apparats, "Successfully updated"
